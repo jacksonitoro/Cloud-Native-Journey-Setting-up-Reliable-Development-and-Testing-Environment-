@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  namespace: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi
+        image: python:3.12-slim
+        ports:
+        - containerPort: 8000
+        command: ["/bin/sh","-lc"]
+        args:
+          - |
+            pip install --no-cache-dir fastapi uvicorn &&
+            uvicorn main:app --host 0.0.0.0 --port 8000
+        volumeMounts:
+        - name: app
+          mountPath: /app
+        workingDir: /app
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      volumes:
+      - name: app
+        configMap:
+          name: fastapi-app

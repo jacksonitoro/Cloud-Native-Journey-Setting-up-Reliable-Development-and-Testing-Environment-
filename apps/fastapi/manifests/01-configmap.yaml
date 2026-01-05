@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fastapi-app
+  namespace: fastapi
+data:
+  main.py: |
+    from fastapi import FastAPI
+
+    app = FastAPI()
+
+    @app.get("/")
+    def root():
+      return {"status": "ok", "service": "fastapi", "via": "gitops"}
